@@ -1,45 +1,113 @@
 # Education Analysis
-Using Python's Pandas and Power BI, analyzing school data <br>
-[Executive Report](https://github.com/Caio-Felice-Cunha/Education-Analysis/blob/main/Executive%20Report%20Education%20Analysis.pdf) <br>
-[Report (Python Script)](https://github.com/Caio-Felice-Cunha/Education-Analysis/blob/main/Education%20Analysis.ipynb)<br>
-[Power BI Dashboard](https://app.powerbi.com/view?r=eyJrIjoiZTdiMGZmMTItZDZlYi00ZTAxLTkyYTctYWNlNGJkNmU2MTRhIiwidCI6IjA4OTM0YTNmLWFkNmUtNDgzZS1hNjhlLTUxYWI3OTI1YmFiNyJ9)<br>
-[Power BI Power App](https://app.powerbi.com/Redirect?action=OpenApp&appId=f6eebfe2-d3d9-472c-82d9-ddd925f736b9&ctid=08934a3f-ad6e-483e-a68e-51ab7925bab7)
+
+School performance analysis with Python (Pandas) and Power BI.
+
+A network of schools wanted to understand its market: how students perform, how much is spent per student, and which factors actually move Math and Writing results. This repo answers those questions from two mock datasets (15 schools, 39,160 student records) using Pandas, and presents the same story in a Power BI dashboard.
+
+[Executive Report (PDF)](https://github.com/Caio-Felice-Cunha/Education-Analysis/blob/main/Executive%20Report%20Education%20Analysis.pdf) /
+[Notebook](https://github.com/Caio-Felice-Cunha/Education-Analysis/blob/main/Education%20Analysis.ipynb) /
+[Power BI Dashboard](https://app.powerbi.com/view?r=eyJrIjoiZTdiMGZmMTItZDZlYi00ZTAxLTkyYTctYWNlNGJkNmU2MTRhIiwidCI6IjA4OTM0YTNmLWFkNmUtNDgzZS1hNjhlLTUxYWI3OTI1YmFiNyJ9)
 
 <img align="center" src=https://user-images.githubusercontent.com/111542025/227356726-ebd8f5ae-a255-4200-afed-caf36053001b.jpg>
 
-## This is the 2nd version
-### Improvements compared to the last version:
-* Power BI Dashboard (Report)
-* Report
-
 ## Business Problem
-> Data source: The data were provided by the Data Science Academy, which used the Realistic Data Generator (https://www.mockaroo.com/)
 
-The analysis was done to bring insights to a network of schools that aims to better understand the market.<br>
-It was necessary to understand the performance of students, how much is invested in each school, which indicators resulted in better results for Mathematics and Writing, among other questions.
+The school network wanted to better understand its market: student performance, spending per school, and which indicators lead to better Math and Writing results. The assumption is that the schools sit in slightly different but culturally similar regions, so comparisons across them are meaningful.
 
-## Business Assumptions
-It is assumed that the schools belong to slightly different regions and that the culture in which they are located is similar. <br>
-It is also understood that the school network wants to understand how the market works in order to take better advantage of it and improve its methods.
+Data source: provided by the Data Science Academy, generated with the Realistic Data Generator at Mockaroo (https://www.mockaroo.com/). It is mock data, not real student records.
 
-## Solution Strategy
-To perform the analysis, we used only the Python Pandas library, as well as the creation of subtables for a better analysis.
-* Step 01: Loading data and see the quality of it;
-* Step 02: Data selection to answer business problems;
-* Step 03: Data Analysis with Pandas to answer business problems.
+## Data at a Glance
 
-## Data Insights
-For this project, the objective was to understand, mainly, how the annual budget and the type of school influence school performance.
+* 15 schools (8 private, 7 public)
+* 39,160 student records
+* $24,649,428 total annual budget
+* Passing grade for both subjects: 70
 
-## Business Results
-The allocation of resources is increasingly necessary because, despite the school's budget helping in student performance, there are many more factors that also help to improve school performance. 
+## How to Run
+
+```bash
+git clone https://github.com/Caio-Felice-Cunha/Education-Analysis
+cd Education-Analysis
+python -m venv .venv
+# Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+jupyter notebook "Education Analysis.ipynb"
+```
+
+Then run the cells top to bottom. The notebook reads the two CSVs in `datasets/` and writes a summary workbook to `datasets/df_summary_school_performance.xlsx`. Verified end to end on Python 3.13 with pandas 3.0.3.
+
+A small test suite in `tests/` recomputes the headline metrics from the raw CSVs, so a future pandas upgrade or data change that breaks the pipeline is caught:
+
+```bash
+pip install pytest
+pytest
+```
+
+## Results
+
+All numbers below come straight from the notebook outputs and the Executive Report. Nothing here is estimated.
+
+**Overall averages**
+
+* Average Writing grade: 81.88
+* Average Math grade: 78.98
+
+**Approval (passing grade 70)**
+
+* Writing: 33,600 students approved (85.80%)
+* Math: 29,360 approved (74.97%)
+* Both subjects: 25,518 approved (65.16%)
+
+**Private vs public**
+
+| Type | Avg Writing | Avg Math | % Overall Approved |
+|---|---|---|---|
+| Private | 83.89 | 83.48 | 90.43% |
+| Public | 80.97 | 76.96 | 53.67% |
+
+**Spending per student vs performance (the key finding)**
+
+Higher spend per student lines up with lower overall approval, not higher. The relationship is inverse.
+
+| Spend per student | % Overall Approved |
+|---|---|
+| Under $585 | 90.37% |
+| $585 to $630 | 81.42% |
+| $630 to $645 | 62.84% |
+| $645 to $680 | 53.53% |
+
+**School size**
+
+| Size | % Overall Approved |
+|---|---|
+| Small (under 1,000) | 89.88% |
+| Midsize (1,000 to 2,000) | 90.61% |
+| Large (2,000 to 5,000) | 58.29% |
+
+The top 5 schools by overall approval are all private (School G 91.33% down to School J 90.54%). The bottom 5 are all public (School L 52.99% up to School M 53.54%).
 
 ## Conclusion
-When carrying out the analysis, it was concluded that the annual budget influences school performance, however, it is not a determining factor for raising the grade of students. <br>
-This becomes more evident when we analyze public and private schools, where public schools have a lower average grade, and a much lower approval rate, however, the annual budget is often equivalent to 3x the annual budget of a private school 
 
-## Next Steps
-* Accepting suggestions
+Budget alone does not explain results. Public schools carry much larger total budgets, but that is driven by enrollment, not by generous per-student funding. Per-student spend is actually comparable across types (roughly $578 to $655), and the schools that spend the most per student post the lowest approval rates. The real gap is between private and public: about 37 percentage points in overall approval (90.43% vs 53.67%) at similar per-student spend. So money per student is not the differentiator here. The size and type of the school track far more closely with outcomes.
+
+## Solution Strategy
+
+The analysis uses the Python Pandas library plus a set of summary sub-tables.
+
+* Step 1: load the data and check its quality.
+* Step 2: select the data needed to answer each business question.
+* Step 3: analyze with Pandas and build summary tables.
+
+## Data Quality Note
+
+School O reports an enrollment of 1,635 in `schools_dataset.csv` but only 1,625 student records exist in `students_dataset.csv` (10 records short). Because per-student budget is computed from record counts, School O shows $641.93 per student instead of the $638.00 you get from `Annual_Budget / Stundents_Number`. This does not change any conclusion above, but it is worth knowing when comparing School O to the rest. (The `Stundents_Number` spelling is the column header as provided in the source data.)
+
+## Notes on This Version
+
+This is the 2nd version. Compared to the previous one it adds the Power BI dashboard and the executive report. The notebook was later updated to run on pandas 2.0 and later (column-selected groupby aggregations) and to drop two unused imports.
+
+`datasets/df_summary_school_performance.xlsx` is a generated output of the notebook (the per-school summary table), kept here as a downloadable result.
 
 ## Disclaimer
-A good part of this project was largely done in the Data Science Academy, Big Data Real-Time Analytics with Python and Spark course (part of the Data Scientist training)
+
+A good part of this project was built during the Data Science Academy "Big Data Real-Time Analytics with Python and Spark" course (part of the Data Scientist training).
