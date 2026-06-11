@@ -1,0 +1,7 @@
+# Verified with Python 3.13, pandas 3.0.3, openpyxl 3.1.5.
+# pandas>=2.0 is required: the notebook uses column-selected groupby aggregations,
+# which are needed because pandas 2.0 removed the old whole-frame .mean() that
+# silently dropped non-numeric columns.
+pandas>=2.0
+openpyxl>=3.1
+jupyter>=1.0
